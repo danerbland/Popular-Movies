@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Popular-Movies</string>
+
+    <string name="movieDB_Attribution">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
+
+    <string name="network_failure_message">Unable to load data from the Network.  Please try again later.</string>
+
+    <string name="imageview_content_description">Movie Poster</string>
 </resources>
