@@ -1,6 +1,10 @@
 package com.example.android.popular_movies;
 
 import android.content.ContentValues;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Movie;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
@@ -10,6 +14,9 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,17 +25,23 @@ import com.example.android.utils.OpenMovieJsonUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ContentValues[]> {
+public class MainActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<ContentValues[]>,
+        MovieAdapter.MovieAdapterOnClickHandler {
+
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     private int mColumns = 2;
 
+    private ContentValues[] mMovieData = null;
+
     private static final int MOVIE_LOADER_ID = 33;
 
     //TODO load this preference from the last use.
-    private String mlistPreference = "popular";
+    SharedPreferences mSharedPreferences;
+    public String mlistPreference;
 
     //TODO find a solution so that the moviedb attribution doesn't appear on rotation.
     @Override
@@ -37,12 +50,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         Toast.makeText(this, getString(R.string.movieDB_Attribution), Toast.LENGTH_LONG).show();
 
+        //Initialize our Recyclerview
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_mainlist);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, mColumns);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(false);
-        mAdapter = new MovieAdapter();
+        mAdapter = new MovieAdapter(this, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        //load the shared preferences
+        mSharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences_key), MODE_PRIVATE);
+        mlistPreference = mSharedPreferences.getString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
+
 
 
         //Time to initialize the loader and begin the background tasks
@@ -50,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         int loaderId = MOVIE_LOADER_ID;
 
         getSupportLoaderManager().initLoader(loaderId, null, callback);
+
+        if(savedInstanceState != null){
+            mAdapter.notifyDataSetChanged();
+        }
 
 
     }
@@ -60,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return new AsyncTaskLoader<ContentValues[]>(this) {
 
             //ContentValues array to hold movie data. Will be sent to MovieAdapter for processing a
-            ContentValues[] mMovieData = null;
 
             // COMPLETED (3) Cache the weather data in a member variable and deliver it in onStartLoading.
             /**
@@ -115,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<ContentValues[]> loader, ContentValues[] data) {
         mAdapter.setmContentValues(data);
+
         if(data == null){
             Toast.makeText(this, getString(R.string.network_failure_message), Toast.LENGTH_LONG).show();
             Log.e(TAG, "onLoadFinished: Null Data Returned");
@@ -123,8 +146,66 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<ContentValues[]> loader) {
-
+        return;
     }
 
+
+    //put extras into the activity
+    @Override
+    public void onClick(int index) {
+        Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
+
+        if(mMovieData!= null) {
+            //Extras to add to DetailActivity:  String Title, String Overview, float average vote, String poster path, String backdrop path, String release date
+            intentToStartDetailActivity.putExtra(getString(R.string.extra_string_title), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_TITLE_KEY));
+            intentToStartDetailActivity.putExtra(getString(R.string.extra_string_overview), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_OVERVIEW_KEY));
+            intentToStartDetailActivity.putExtra(getString(R.string.extra_float_vote_average), mMovieData[index].getAsFloat(OpenMovieJsonUtils.JSON_VOTE_AVG_KEY));
+            intentToStartDetailActivity.putExtra(getString(R.string.extra_string_poster_path), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_POSTER_PATH_KEY));
+            intentToStartDetailActivity.putExtra(getString(R.string.extra_string_backdrop_path), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_BACKDROP_PATH_KEY));
+            intentToStartDetailActivity.putExtra(getString(R.string.extra_string_release_date), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_RELEASE_DATE_KEY));
+
+            startActivity(intentToStartDetailActivity);
+        } else {
+            Toast.makeText(this, getString(R.string.network_failure_message), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.list_menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences_key), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        int id = item.getItemId();
+
+        if(id == R.id.list_menu_popular){
+            editor.putString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
+        } if (id == R.id.list_menu_top_rated){
+            editor.putString(getString(R.string.preference_list_order_key), getString(R.string.preference_top_rated));
+        }
+        editor.commit();
+
+        mlistPreference = sharedPreferences.getString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
+        mMovieData = null;
+        getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
+        mAdapter.notifyDataSetChanged();
+//        mRecyclerView.setAdapter(mAdapter);
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle state){
+        super.onRestoreInstanceState(state);
+        getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
+        mAdapter.notifyDataSetChanged();
+    }
 
 }

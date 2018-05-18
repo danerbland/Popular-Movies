@@ -6,4 +6,25 @@
     <string name="network_failure_message">Unable to load data from the Network.  Please try again later.</string>
 
     <string name="imageview_content_description">Movie Poster</string>
+
+    <string name="movie_title_tool_text">Movie Title: Some Long Title Exampls</string>
+    <string name="movie_description_tool_text">Movie Description Here</string>
+    <string name="movie_release_date_tool_text">00/00/0000</string>
+    <string name="movie_rating_tool_text">0.0/10.0</string>
+
+    <string name="extra_string_title">title</string>
+    <string name="extra_string_release_date">release_date</string>
+    <string name="extra_string_overview">overview</string>
+    <string name="extra_float_vote_average">vote_average</string>
+    <string name="extra_string_backdrop_path">backdrop</string>
+    <string name="extra_string_poster_path">poster_path</string>
+
+    <string name="menu_item_popular">Most Popular</string>
+    <string name="menu_item_top_rated">Top Rated</string>
+
+    <string name="shared_preferences_key">user_preferences</string>
+    <string name="preference_list_order_key">list_order</string>
+    <string name="preference_popular">popular</string>
+    <string name="preference_top_rated">top_rated</string>
+
 </resources>

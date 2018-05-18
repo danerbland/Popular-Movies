@@ -1,20 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".DetailActivity">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <!-- TODO: Move All Dimensions to dimens file -->
+        <ImageView
+            android:id="@+id/detail_poster_imageview"
+            android:adjustViewBounds="true"
+            android:layout_width="150dp"
+            android:layout_height="225dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/imageview_content_description"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/detail_title_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:scrollHorizontally="false"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/detail_poster_imageview"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/extra_string_title" />
+
+        <TextView
+            android:id="@+id/detail_vote_average_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/detail_release_date_textview"
+            app:layout_constraintStart_toStartOf="@+id/detail_release_date_textview"
+            app:layout_constraintTop_toBottomOf="@+id/detail_release_date_textview"
+            tools:text="@string/extra_float_vote_average" />
+
+        <TextView
+            android:id="@+id/detail_release_date_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/detail_title_textview"
+            app:layout_constraintStart_toStartOf="@+id/detail_title_textview"
+            app:layout_constraintTop_toBottomOf="@+id/detail_title_textview"
+            tools:text="@string/extra_string_release_date" />
+
+        <TextView
+            android:id="@+id/detail_overview_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/detail_poster_imageview"
+            app:layout_constraintTop_toBottomOf="@+id/detail_poster_imageview"
+            tools:text="@string/extra_string_overview" />
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:contentDescription="@string/imageview_content_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</layout>

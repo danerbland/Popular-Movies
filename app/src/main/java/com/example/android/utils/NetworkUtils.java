@@ -36,7 +36,7 @@ public final class NetworkUtils {
 
     //INSERT MOVIEDB API KEY HERE
     private static final String MOVIEDB_API_KEY =
-            "INSERT API KEY HERE";
+            "";
 
 
     //TODO Define a method to query the MOVIEDb API and return poster paths for movies.

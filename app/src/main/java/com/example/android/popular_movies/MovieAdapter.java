@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.Image;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,12 +24,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private static final String TAG = MovieAdapter.class.getSimpleName();
     private ContentValues[] mContentValues;
     private Context mContext;
+    public MovieAdapterOnClickHandler mClickHandler;
+
+    public interface MovieAdapterOnClickHandler {
+        void onClick(int index);
+    }
+
+    public MovieAdapter(@NonNull Context context, MovieAdapterOnClickHandler clickHandler) {
+        mContext = context;
+        mClickHandler = clickHandler;
+    }
+
 
 
     @Override
     //TODO (DONE) declare the context and layoutID.  Inflate the View
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
         int layoutId = R.layout.movie_list_item;
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(layoutId, parent, false);
@@ -37,7 +48,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     @Override
-    //TODO (DONE) Access Data to bind image to the viewholder's imageview.
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
 
         if(mContentValues != null) {
@@ -53,7 +63,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     @Override
-    //TODO (DONE) return the number of movies in the data set.
     public int getItemCount() {
         if(mContentValues != null) {
             return mContentValues.length;
@@ -63,13 +72,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         }
     }
 
-    class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
+    class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final ImageView mImageView;
 
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
             mImageView = (ImageView) itemView.findViewById(R.id.movie_iv);
+
+            itemView.setOnClickListener(this);
+        }
+
+        //
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            mClickHandler.onClick(adapterPosition);
         }
     }
 

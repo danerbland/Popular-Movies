@@ -7,12 +7,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!-- TODO edit the movie list item to include a border/proper dimensions -->
+
     <ImageView
         android:id="@+id/movie_iv"
-        android:contentDescription="@string/imageview_content_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/imageview_content_description"
         app:srcCompat="@drawable/ic_launcher_background" />
 
 </android.support.constraint.ConstraintLayout>
