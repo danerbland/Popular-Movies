@@ -7,7 +7,7 @@
 
     <string name="imageview_content_description">Movie Poster</string>
 
-    <string name="movie_title_tool_text">Movie Title: Some Long Title Exampls</string>
+    <string name="movie_title_tool_text">Movie Title: Some Long Title Examples</string>
     <string name="movie_description_tool_text">Movie Description Here</string>
     <string name="movie_release_date_tool_text">00/00/0000</string>
     <string name="movie_rating_tool_text">0.0/10.0</string>
@@ -26,5 +26,11 @@
     <string name="preference_list_order_key">list_order</string>
     <string name="preference_popular">popular</string>
     <string name="preference_top_rated">top_rated</string>
+
+    <string name="saved_state_bool_key">boolean_sentinel</string>
+
+    <string name="image_transition_name">image_transition</string>
+
+    <string name="detail_rating_rubric">/10</string>
 
 </resources>

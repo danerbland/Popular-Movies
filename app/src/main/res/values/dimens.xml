@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="list_margin">8dp</dimen>
+    
+    <dimen name="detail_image_width">150dp</dimen>
+    <dimen name="detail_image_height">225dp</dimen>
+    
+    <dimen name="detail_title_margin">8dp</dimen>
+    <dimen name="detail_release_margin">16dp</dimen>
+    <dimen name="detail_overview_margin">8dp</dimen>
+</resources>

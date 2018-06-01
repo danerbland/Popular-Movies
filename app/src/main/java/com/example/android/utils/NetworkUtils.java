@@ -1,10 +1,7 @@
 package com.example.android.utils;
 
-import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
-
-import com.example.android.popular_movies.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,8 +36,6 @@ public final class NetworkUtils {
             "";
 
 
-    //TODO Define a method to query the MOVIEDb API and return poster paths for movies.
-
         public static URL buildMovieDBQueryURL (String preference) {
 
         String basePathUrl = BASE_MOVIEDB_QUERY_URL + preference;
@@ -54,9 +49,6 @@ public final class NetworkUtils {
             e.printStackTrace();
             return null;
         }
-
-        //TODO incorporate the preference (either popular or top rated) into this path.  To start, we'll default to
-        //using popular.
 
     }
 

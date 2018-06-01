@@ -3,8 +3,8 @@ package com.example.android.popular_movies;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ImageView;
+import android.view.View;
+
 
 import com.example.android.popular_movies.databinding.ActivityDetailBinding;
 import com.example.android.utils.NetworkUtils;
@@ -44,7 +44,9 @@ public class DetailActivity extends AppCompatActivity {
         //update the detail Textviews via Data Binding
         mBinding.detailTitleTextview.setText(title);
         mBinding.detailOverviewTextview.setText(overview);
-        mBinding.detailVoteAverageTextview.setText(Float.toString(voteAverage)+"/10");
+        mBinding.detailRatingBar.setRating(voteAverage);
+        mBinding.detailRatingBar.setVisibility(View.GONE);
+        mBinding.detailVoteAverageTextview.setText(Float.toString(voteAverage)+ getString(R.string.detail_rating_rubric));
         mBinding.detailReleaseDateTextview.setText(dateParts[0]);
 
 

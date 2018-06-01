@@ -3,8 +3,7 @@ package com.example.android.popular_movies;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Movie;
-import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
@@ -33,23 +32,29 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
-    private int mColumns = 2;
+    private final int mColumns = 2;
+
+    private boolean mRotationSentinel = false;
 
     private ContentValues[] mMovieData = null;
 
     private static final int MOVIE_LOADER_ID = 33;
 
-    //TODO load this preference from the last use.
-    SharedPreferences mSharedPreferences;
-    public String mlistPreference;
+    private SharedPreferences mSharedPreferences;
+    private String mlistPreference;
 
-    //TODO find a solution so that the moviedb attribution doesn't appear on rotation.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toast.makeText(this, getString(R.string.movieDB_Attribution), Toast.LENGTH_LONG).show();
 
+        if(savedInstanceState != null) {
+            mRotationSentinel = savedInstanceState.getBoolean(getString(R.string.saved_state_bool_key));
+        }
+
+        if(!mRotationSentinel){
+            Toast.makeText(this, getString(R.string.movieDB_Attribution), Toast.LENGTH_LONG).show();
+        }
         //Initialize our Recyclerview
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_mainlist);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, mColumns);
@@ -66,9 +71,8 @@ public class MainActivity extends AppCompatActivity
 
         //Time to initialize the loader and begin the background tasks
         LoaderCallbacks<ContentValues[]> callback = MainActivity.this;
-        int loaderId = MOVIE_LOADER_ID;
 
-        getSupportLoaderManager().initLoader(loaderId, null, callback);
+        getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, null, callback);
 
         if(savedInstanceState != null){
             mAdapter.notifyDataSetChanged();
@@ -111,17 +115,19 @@ public class MainActivity extends AppCompatActivity
 
                 URL movieDbURL = NetworkUtils.buildMovieDBQueryURL(mlistPreference);
 
+                if(movieDbURL != null) {
+                    try {
+                        String jsonMovieResponse = NetworkUtils
+                                .getResponseFromHttpUrl(movieDbURL);
 
-                try {
-                    String jsonMovieResponse = NetworkUtils
-                            .getResponseFromHttpUrl(movieDbURL);
+                        return OpenMovieJsonUtils
+                                .getMovieContentValuesFromJson(MainActivity.this, jsonMovieResponse);
 
-                    ContentValues[] jsonMovieContentValues = OpenMovieJsonUtils
-                            .getMovieContentValuesFromJson(MainActivity.this, jsonMovieResponse);
-
-                    return jsonMovieContentValues;
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                } else{
                     return null;
                 }
             }
@@ -146,7 +152,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<ContentValues[]> loader) {
-        return;
     }
 
 
@@ -154,6 +159,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(int index) {
         Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(this, mAdapter.getImageView(), getString(R.string.image_transition_name));
 
         if(mMovieData!= null) {
             //Extras to add to DetailActivity:  String Title, String Overview, float average vote, String poster path, String backdrop path, String release date
@@ -164,7 +172,7 @@ public class MainActivity extends AppCompatActivity
             intentToStartDetailActivity.putExtra(getString(R.string.extra_string_backdrop_path), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_BACKDROP_PATH_KEY));
             intentToStartDetailActivity.putExtra(getString(R.string.extra_string_release_date), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_RELEASE_DATE_KEY));
 
-            startActivity(intentToStartDetailActivity);
+            startActivity(intentToStartDetailActivity, options.toBundle());
         } else {
             Toast.makeText(this, getString(R.string.network_failure_message), Toast.LENGTH_LONG).show();
         }
@@ -190,7 +198,7 @@ public class MainActivity extends AppCompatActivity
         } if (id == R.id.list_menu_top_rated){
             editor.putString(getString(R.string.preference_list_order_key), getString(R.string.preference_top_rated));
         }
-        editor.commit();
+        editor.apply();
 
         mlistPreference = sharedPreferences.getString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
         mMovieData = null;
@@ -208,4 +216,18 @@ public class MainActivity extends AppCompatActivity
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected void onSaveInstanceState (Bundle b){
+        super.onSaveInstanceState(b);
+        b.putBoolean(getString(R.string.saved_state_bool_key), true);
+    }
+
 }
+
+
+
+/*
+TODO add infinite scroll/load more movies.  Fix Rating Bar
+
+
+ */
