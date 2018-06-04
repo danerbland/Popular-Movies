@@ -8,7 +8,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorOffWhite">
+        android:background="@color/colorWhite">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -88,6 +88,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detail_poster_imageview"
                 tools:text="@string/extra_string_overview" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_trailer_label"
+                android:layout_marginTop="@dimen/detail_overview_margin"
+                style="@style/MediumText"
+                app:layout_constraintTop_toBottomOf="@id/detail_overview_textview"
+                android:text="@string/detail_trailer_label"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_trailers_recyclerview"
+                app:layout_constraintTop_toBottomOf="@id/detail_trailer_label"
+                android:layout_marginTop="@dimen/detail_overview_margin"/>
 
 
         </android.support.constraint.ConstraintLayout>

@@ -8,4 +8,6 @@
     <dimen name="detail_title_margin">8dp</dimen>
     <dimen name="detail_release_margin">16dp</dimen>
     <dimen name="detail_overview_margin">8dp</dimen>
+    
+    <dimen name="detail_trailer_thumbnail_margin">16dp</dimen>
 </resources>

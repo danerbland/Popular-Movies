@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity
 
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int MOVIE_LOADER_ID = 33;
+
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     private final int mColumns = 2;
@@ -40,8 +42,6 @@ public class MainActivity extends AppCompatActivity
     private boolean mRotationSentinel = false;
 
     private ContentValues[] mMovieData = null;
-
-    private static final int MOVIE_LOADER_ID = 33;
 
     private SharedPreferences mSharedPreferences;
     private String mlistPreference;
@@ -90,12 +90,6 @@ public class MainActivity extends AppCompatActivity
 
         return new AsyncTaskLoader<ContentValues[]>(this) {
 
-            //ContentValues array to hold movie data. Will be sent to MovieAdapter for processing a
-
-            // COMPLETED (3) Cache the weather data in a member variable and deliver it in onStartLoading.
-            /**
-             * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
-             */
             @Override
             protected void onStartLoading() {
                 if (mMovieData != null) {
@@ -121,6 +115,7 @@ public class MainActivity extends AppCompatActivity
 
                 if(movieDbURL != null) {
                     try {
+                        Log.e(TAG, movieDbURL.toString());
                         String jsonMovieResponse = NetworkUtils
                                 .getResponseFromHttpUrl(movieDbURL);
 
@@ -156,6 +151,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<ContentValues[]> loader) {
+        mMovieData = null;
+        mAdapter.setmContentValues(null);
     }
 
 
@@ -169,6 +166,7 @@ public class MainActivity extends AppCompatActivity
 
         if(mMovieData!= null) {
             //Extras to add to DetailActivity:  String Title, String Overview, float average vote, String poster path, String backdrop path, String release date
+            intentToStartDetailActivity.putExtra(getString(R.string.extra_string_id), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_ID_KEY));
             intentToStartDetailActivity.putExtra(getString(R.string.extra_string_title), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_TITLE_KEY));
             intentToStartDetailActivity.putExtra(getString(R.string.extra_string_overview), mMovieData[index].getAsString(OpenMovieJsonUtils.JSON_OVERVIEW_KEY));
             intentToStartDetailActivity.putExtra(getString(R.string.extra_float_vote_average), mMovieData[index].getAsFloat(OpenMovieJsonUtils.JSON_VOTE_AVG_KEY));
@@ -231,7 +229,7 @@ public class MainActivity extends AppCompatActivity
 
 
 /*
-TODO add infinite scroll/load more movies.  Fix Rating Bar
+TODO add infinite scroll/load more movies.  Fix Rating Bar.
 
 
  */

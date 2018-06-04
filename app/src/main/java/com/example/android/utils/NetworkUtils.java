@@ -20,6 +20,12 @@ public final class NetworkUtils {
     private static final String BASE_MOVIEDB_QUERY_URL =
             "http://api.themoviedb.org/3/movie/";
 
+    private static final String BASE_TRAILER_THUMBNAIL_URL =
+            "https://img.youtube.com/vi/";
+
+    private static final String BASE_YOUTUBE_VIDEO_URL =
+            "https://www.youtube.com/watch";
+
     private static final String MOVIEDB_IMAGE_SIZE_ORIGINAL = "original";
     private static final String MOVIEDB_IMAGE_SIZE_S = "w92";
     private static final String MOVIEDB_IMAGE_SIZE_M = "w154";
@@ -29,6 +35,7 @@ public final class NetworkUtils {
     private static final String MOVIEDB_IMAGE_SIZE_XXXL = "w780";
 
     private static final String MOVIEDB_API_PARAM = "api_key";
+    private static final String YOUTUBE_KEY_PARAM = "v";
 
 
     //INSERT MOVIEDB API KEY HERE
@@ -63,6 +70,45 @@ public final class NetworkUtils {
                 return null;
             }
 
+        }
+
+        public static URL buildMovieTrailersURL (String id){
+            String baseURL = BASE_MOVIEDB_QUERY_URL + id +"/videos";
+            Uri moviePathQueryUri = Uri.parse(baseURL).buildUpon()
+                    .appendQueryParameter(MOVIEDB_API_PARAM, MOVIEDB_API_KEY).build();
+
+            try {
+                URL moviePathQueryUrl = new URL(moviePathQueryUri.toString());
+                return moviePathQueryUrl;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+
+        public static URL buildTrailerThumbnailURL (String key){
+            String baseURL = BASE_TRAILER_THUMBNAIL_URL + key + "/0.jpg";
+            try {
+                URL trailerThumbnailURL = new URL(baseURL);
+                return trailerThumbnailURL;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        public static URL buildTrailerYoutubeURL (String key){
+            String baseURL = BASE_YOUTUBE_VIDEO_URL;
+            Uri youtubeTrailerVideoUri = Uri.parse(baseURL).buildUpon()
+                    .appendQueryParameter(YOUTUBE_KEY_PARAM, key).build();
+            try {
+                URL youtubeTrailerVideoURL = new URL(youtubeTrailerVideoUri.toString());
+                return youtubeTrailerVideoURL;
+            } catch (MalformedURLException e){
+                e.printStackTrace();
+                return null;
+            }
         }
 
     //Based strongly off the getResponseFromHttpUrl method in the Sunshine Project from earlier.
