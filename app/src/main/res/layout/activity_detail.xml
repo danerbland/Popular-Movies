@@ -76,17 +76,25 @@
                 app:layout_constraintTop_toBottomOf="@+id/detail_title_textview"
                 tools:text="@string/extra_string_release_date" />
 
+            <View
+                android:id="@+id/detail_overview_top_divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="@dimen/detail_overview_margin"
+                android:background="@color/colorPrimary"
+                app:layout_constraintTop_toBottomOf="@id/detail_poster_imageview"
+                />
+
             <TextView
                 android:id="@+id/detail_overview_textview"
                 style="@style/SmallText"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="@dimen/detail_overview_margin"
                 android:ellipsize="none"
                 android:maxLines="100"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_poster_imageview"
+                app:layout_constraintTop_toBottomOf="@+id/detail_overview_top_divider"
                 tools:text="@string/extra_string_overview" />
 
             <TextView
@@ -99,11 +107,31 @@
                 android:text="@string/detail_trailer_label"/>
 
             <android.support.v7.widget.RecyclerView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorOffWhite"
                 android:id="@+id/detail_trailers_recyclerview"
                 app:layout_constraintTop_toBottomOf="@id/detail_trailer_label"
-                android:layout_marginTop="@dimen/detail_overview_margin"/>
+                android:paddingTop="@dimen/detail_overview_margin"
+                android:paddingBottom="@dimen/detail_overview_margin"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_reviews_label"
+                android:layout_marginTop="@dimen/detail_overview_margin"
+                style="@style/MediumText"
+                app:layout_constraintTop_toBottomOf="@id/detail_trailers_recyclerview"
+                android:text="@string/detail_reviews_label"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorOffWhite"
+                android:id="@+id/detail_reviews_recyclerview"
+                app:layout_constraintTop_toBottomOf="@id/detail_reviews_label"
+                android:paddingTop="@dimen/detail_overview_margin"
+                android:paddingBottom="@dimen/detail_overview_margin"/>
 
 
         </android.support.constraint.ConstraintLayout>

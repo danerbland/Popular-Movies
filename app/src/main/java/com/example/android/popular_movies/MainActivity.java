@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity
 
                 if(movieDbURL != null) {
                     try {
-                        Log.e(TAG, movieDbURL.toString());
                         String jsonMovieResponse = NetworkUtils
                                 .getResponseFromHttpUrl(movieDbURL);
 

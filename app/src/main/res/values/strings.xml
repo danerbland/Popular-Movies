@@ -34,5 +34,6 @@
 
     <string name="detail_rating_rubric">/10</string>
     <string name="detail_trailer_label">Trailers</string>
+    <string name="detail_reviews_label">Reviews</string>
 
 </resources>

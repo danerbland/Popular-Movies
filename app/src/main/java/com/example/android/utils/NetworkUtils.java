@@ -26,6 +26,7 @@ public final class NetworkUtils {
     private static final String BASE_YOUTUBE_VIDEO_URL =
             "https://www.youtube.com/watch";
 
+
     private static final String MOVIEDB_IMAGE_SIZE_ORIGINAL = "original";
     private static final String MOVIEDB_IMAGE_SIZE_S = "w92";
     private static final String MOVIEDB_IMAGE_SIZE_M = "w154";
@@ -80,6 +81,21 @@ public final class NetworkUtils {
             try {
                 URL moviePathQueryUrl = new URL(moviePathQueryUri.toString());
                 return moviePathQueryUrl;
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+
+        public static URL buildMovieReviewsURL (String ID){
+            String baseURLString = BASE_MOVIEDB_QUERY_URL + ID + "/reviews";
+            Uri movieReviewsUri = Uri.parse(baseURLString).buildUpon()
+                    .appendQueryParameter(MOVIEDB_API_PARAM, MOVIEDB_API_KEY).build();
+            try {
+                URL movieReviewsURL = new URL(movieReviewsUri.toString());
+                Log.e(TAG, "URL: " + movieReviewsURL);
+                return movieReviewsURL;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 return null;
