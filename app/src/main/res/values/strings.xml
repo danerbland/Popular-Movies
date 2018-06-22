@@ -22,11 +22,13 @@
 
     <string name="menu_item_popular">Most Popular</string>
     <string name="menu_item_top_rated">Top Rated</string>
+    <string name="menu_item_favorites">My Favorites</string>
 
     <string name="shared_preferences_key">user_preferences</string>
     <string name="preference_list_order_key">list_order</string>
     <string name="preference_popular">popular</string>
     <string name="preference_top_rated">top_rated</string>
+    <string name="preference_favorites">favorites</string>
 
     <string name="saved_state_bool_key">boolean_sentinel</string>
 
@@ -35,5 +37,13 @@
     <string name="detail_rating_rubric">/10</string>
     <string name="detail_trailer_label">Trailers</string>
     <string name="detail_reviews_label">Reviews</string>
+    <string name="detail_favorite_label">Favorite</string>
+    <string name="detail_unfavorite_label">UnFavorite</string>
+
+    <string name="detail_review_show_more_label">Show More</string>
+
+    <string name="header_top_rated">Top Rated</string>
+    <string name="header_popular">Most Popular</string>
+    <string name="header_favorites">My Favorites</string>
 
 </resources>

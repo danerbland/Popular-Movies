@@ -2,7 +2,6 @@ package com.example.android.popular_movies;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,15 +13,9 @@ import com.example.android.utils.OpenReviewsJsonUtils;
 
 public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder>{
 
-    //TODO implement this
-
     private static final String TAG = ReviewAdapter.class.getSimpleName();
     private ContentValues[] mContentValues;
     private final Context mContext;
-
-    public interface ReviewOnClickListener{
-        public void onReviewClick();
-    }
 
     public ReviewAdapter (Context context){
         mContext = context;

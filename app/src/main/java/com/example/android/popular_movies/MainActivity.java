@@ -8,18 +8,16 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.android.utils.NetworkUtils;
@@ -31,14 +29,21 @@ public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<ContentValues[]>,
         MovieAdapter.MovieAdapterOnClickHandler {
 
-
+    //TAG for logging purposes
     private static final String TAG = MainActivity.class.getSimpleName();
+    //ID for Movie Loader
     private static final int MOVIE_LOADER_ID = 33;
 
+
+    //Recyclerview and Adapter
     private RecyclerView mRecyclerView;
     private MovieAdapter mAdapter;
     private final int mColumns = 2;
 
+    //FavoritesLoader for populating the favorites list.
+    private FavoritesLoader mFavoritesLoader;
+
+    //Rotation Sentinel
     private boolean mRotationSentinel = false;
 
     private ContentValues[] mMovieData = null;
@@ -64,6 +69,7 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setHasFixedSize(false);
 
+        //Set our Adapter on our RecyclerView
         mAdapter = new MovieAdapter(this, this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -71,13 +77,26 @@ public class MainActivity extends AppCompatActivity
         mSharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.shared_preferences_key), MODE_PRIVATE);
         mlistPreference = mSharedPreferences.getString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
 
+        setActionBarHeader(getHeader());
 
+        //If mlistPreference is not 'favorites', initialize the loader.  Instead, load the data from the DB.
+        if(!mlistPreference.equals(getString(R.string.preference_favorites))) {
+            //Time to initialize the loader and begin the background tasks
+            LoaderCallbacks<ContentValues[]> callback = MainActivity.this;
 
-        //Time to initialize the loader and begin the background tasks
-        LoaderCallbacks<ContentValues[]> callback = MainActivity.this;
+            getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, null, callback);
+        } else {
+            mFavoritesLoader = new FavoritesLoader(this);
+            ContentValues[] values = mFavoritesLoader.getFavoritesContentValues();
+            mMovieData = values;
+            if(values != null) {
+                mAdapter.setmContentValues(values);
+                mAdapter.notifyDataSetChanged();
 
-        getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, null, callback);
-
+            } else {
+                Log.e(TAG, "getFavorites returned Null Cursor");
+            }
+        }
         if(savedInstanceState != null){
             mAdapter.notifyDataSetChanged();
         }
@@ -110,16 +129,16 @@ public class MainActivity extends AppCompatActivity
             public ContentValues[] loadInBackground() {
 
 
-
                 URL movieDbURL = NetworkUtils.buildMovieDBQueryURL(mlistPreference);
 
                 if(movieDbURL != null) {
                     try {
+
                         String jsonMovieResponse = NetworkUtils
                                 .getResponseFromHttpUrl(movieDbURL);
 
                         return OpenMovieJsonUtils
-                                .getMovieContentValuesFromJson(MainActivity.this, jsonMovieResponse);
+                                .getMovieContentValuesFromJson(jsonMovieResponse);
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -194,27 +213,79 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor editor = sharedPreferences.edit();
         int id = item.getItemId();
 
-        if(id == R.id.list_menu_popular){
-            editor.putString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
-        } if (id == R.id.list_menu_top_rated){
-            editor.putString(getString(R.string.preference_list_order_key), getString(R.string.preference_top_rated));
-        }
-        editor.apply();
+        if(id == R.id.list_menu_popular || id == R.id.list_menu_top_rated) {
 
-        mlistPreference = sharedPreferences.getString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
-        mMovieData = null;
-        getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
-        mAdapter.notifyDataSetChanged();
-//        mRecyclerView.setAdapter(mAdapter);
+            if (id == R.id.list_menu_popular) {
+                editor.putString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
+            }
+            if (id == R.id.list_menu_top_rated) {
+                editor.putString(getString(R.string.preference_list_order_key), getString(R.string.preference_top_rated));
+            }
+            editor.apply();
+
+            mlistPreference = sharedPreferences.getString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
+            mMovieData = null;
+
+            //We need to check if the loader is already running.  If it is, we will restart it. If not, we will initialize it.
+
+            getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
+
+            mAdapter.notifyDataSetChanged();
+        } else if (id == R.id.list_menu_favorites){
+
+            editor.putString(getString(R.string.preference_list_order_key), getString(R.string.preference_favorites));
+            editor.apply();
+
+            mlistPreference = sharedPreferences.getString(getString(R.string.preference_list_order_key), getString(R.string.preference_popular));
+
+            mFavoritesLoader = new FavoritesLoader(this);
+            ContentValues[] values = mFavoritesLoader.getFavoritesContentValues();
+            mMovieData = values;
+
+            if(values != null) {
+                mAdapter.setmContentValues(values);
+                mAdapter.notifyDataSetChanged();
+
+            } else {
+                Log.e(TAG, "getFavorites returned Null Cursor");
+            }
+
+        }
+
+        setActionBarHeader(getHeader());
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
+    protected void onResume() {
+
+        //Re-load the favorites list, as it may have changed since looking at a movie.
+        if(mlistPreference.equals(getString(R.string.preference_favorites))){
+            mFavoritesLoader = new FavoritesLoader(this);
+            ContentValues[] values = mFavoritesLoader.getFavoritesContentValues();
+            mMovieData = values;
+
+            if(values != null) {
+                mAdapter.setmContentValues(values);
+                mAdapter.notifyDataSetChanged();
+
+            } else {
+                Log.e(TAG, "getFavorites returned Null Cursor");
+            }
+        }
+
+        super.onResume();
+
+    }
+
+    @Override
     public void onRestoreInstanceState(Bundle state){
         super.onRestoreInstanceState(state);
-        getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
-        mAdapter.notifyDataSetChanged();
+        if(mlistPreference.equals(getString(R.string.preference_popular)) || mlistPreference.equals(getString(R.string.preference_top_rated))) {
+            getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -222,6 +293,30 @@ public class MainActivity extends AppCompatActivity
         super.onSaveInstanceState(b);
         b.putBoolean(getString(R.string.saved_state_bool_key), true);
     }
+
+    //TODO set the action bar to have a different heading.
+    private void setActionBarHeader(String heading) {
+        // TODO Auto-generated method stub
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setTitle(heading);
+        actionBar.show();
+
+    }
+
+    private String getHeader(){
+        if(mlistPreference.equals(getString(R.string.preference_top_rated))){
+            return getString(R.string.header_top_rated);
+        } else if (mlistPreference.equals(getString(R.string.preference_popular))){
+            return getString(R.string.header_popular);
+        } else {
+            return getString(R.string.header_favorites);
+        }
+    }
+
 
 }
 

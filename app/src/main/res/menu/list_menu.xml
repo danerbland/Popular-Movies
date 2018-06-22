@@ -13,4 +13,9 @@
         android:orderInCategory="200"
         android:title="@string/menu_item_popular"
         app:showAsAction="never"/>
+
+    <item android:id = "@+id/list_menu_favorites"
+        android:orderInCategory="300"
+        android:title="@string/menu_item_favorites"
+        app:showAsAction="never"/>
 </menu>

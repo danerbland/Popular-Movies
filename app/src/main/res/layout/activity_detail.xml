@@ -133,6 +133,20 @@
                 android:paddingTop="@dimen/detail_overview_margin"
                 android:paddingBottom="@dimen/detail_overview_margin"/>
 
+            <Button
+                android:id="@+id/detail_favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryLight"
+                android:onClick="onFavoriteButtonClick"
+                android:text="@string/detail_favorite_label"
+                app:layout_constraintEnd_toEndOf="@+id/detail_rating_bar"
+                app:layout_constraintStart_toStartOf="@+id/detail_rating_bar"
+                app:layout_constraintTop_toBottomOf="@+id/detail_rating_bar" />
+
 
         </android.support.constraint.ConstraintLayout>
 

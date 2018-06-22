@@ -6,6 +6,7 @@
         android:layout_height="100dp"
         android:background="@color/colorOffWhite"
         android:id="@+id/trailer_imageview"
+        android:contentDescription="@string/detail_trailer_label"
         android:layout_margin="@dimen/detail_trailer_thumbnail_margin"/>
 
 </android.support.constraint.ConstraintLayout>

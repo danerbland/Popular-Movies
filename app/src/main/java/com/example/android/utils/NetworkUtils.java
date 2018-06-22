@@ -64,7 +64,6 @@ public final class NetworkUtils {
             String baseUrl = BASE_MOVIEDB_POSTER_URL + MOVIEDB_IMAGE_SIZE_L + path;
             try {
                 URL moviePosterQueryUrl = new URL(baseUrl);
-                Log.v(TAG, "URL: " + moviePosterQueryUrl);
                 return moviePosterQueryUrl;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -94,7 +93,6 @@ public final class NetworkUtils {
                     .appendQueryParameter(MOVIEDB_API_PARAM, MOVIEDB_API_KEY).build();
             try {
                 URL movieReviewsURL = new URL(movieReviewsUri.toString());
-                Log.e(TAG, "URL: " + movieReviewsURL);
                 return movieReviewsURL;
             } catch (MalformedURLException e) {
                 e.printStackTrace();

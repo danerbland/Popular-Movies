@@ -1,7 +1,6 @@
 package com.example.android.utils;
 
 import android.content.ContentValues;
-import android.content.Context;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +19,7 @@ public class OpenTrailerJsonUtils {
 
     //getTrailerContentValuesFromJson takes a string of JSON and returns an array of ContentValues, each
     //ContentValue representing an individual trailer.
-    public static ContentValues[] getTrailerContentValuesFromJson(Context context, String trailersString) throws JSONException {
+    public static ContentValues[] getTrailerContentValuesFromJson(String trailersString) throws JSONException {
 
         JSONObject trailersJSONObject = new JSONObject(trailersString);
 

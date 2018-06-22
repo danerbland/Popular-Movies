@@ -1,7 +1,6 @@
 package com.example.android.utils;
 
 import android.content.ContentValues;
-import android.content.Context;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,7 +25,7 @@ public class OpenMovieJsonUtils {
     public static final String JSON_RELEASE_DATE_KEY = "release_date";
 
 
-    public static ContentValues[] getMovieContentValuesFromJson(Context context, String movieJsonStr)
+    public static ContentValues[] getMovieContentValuesFromJson(String movieJsonStr)
             throws JSONException {
 
         JSONObject movieJsonObject = new JSONObject(movieJsonStr);
@@ -37,7 +36,6 @@ public class OpenMovieJsonUtils {
 
 
         ContentValues[] movieContentValues = new ContentValues[jsonMovieArray.length()];
-
 
 
         //Goes through the 'results' JSONArray and creates appends each movie's information to our

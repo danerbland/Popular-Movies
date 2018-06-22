@@ -1,7 +1,7 @@
 package com.example.android.utils;
 
 import android.content.ContentValues;
-import android.content.Context;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +15,7 @@ public class OpenReviewsJsonUtils {
     public static final String JSON_CONTENT_KEY = "content";
     public static final String JSON_URL_KEY = "url";
 
-    public static ContentValues[] getReviewsContentValuesFromJson(Context context, String reviewsString) throws JSONException {
+    public static ContentValues[] getReviewsContentValuesFromJson(String reviewsString) throws JSONException {
 
         JSONObject reviewsJSONObject = new JSONObject(reviewsString);
 
